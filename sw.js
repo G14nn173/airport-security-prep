@@ -1,4 +1,4 @@
-const CACHE_NAME = "airport-security-prep-v4";
+const CACHE_NAME = "airport-security-prep-v10";
 const CACHE_PREFIX = "airport-security-prep-";
 const LEGACY_CACHE_PREFIX = "sea-security-prep-";
 const PRECACHE_URLS = [

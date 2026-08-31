@@ -208,6 +208,51 @@ When making unrelated changes, verify these remain unchanged.
 
 Current assessment persistence keys are `securityAssessmentSessionV3` and `securityAssessmentStatsV3`. The saved-session schema version is `4.0.0`.
 
+Question objects expose a backward-compatible `family` metadata field. Explicit fine-grained families are used where available; otherwise the category is used as the family fallback. The `diff` field is an editorial estimate of cognitive load: `1` easy, `2` medium, `3` hard. It is not a validated psychometric measurement.
+
+Question objects also expose an optional backward-compatible `mechanism` field for describing the solution process within a family. Code consuming older question objects must continue to tolerate a missing or `null` mechanism.
+
+Bank V2 Phase 2A status:
+
+- Attention V2 Phase 2A draft: 120 items across `code_compare`, `mismatch_detection`, `selective_search`, `symbol_count`, `multi_field_match`, `transposition_detection`, `consistency_check` and `exception_detection` (15 each). Editorial difficulty: 30 easy, 60 medium, 30 hard. Strict item-level cognitive uniqueness is estimated at approximately 55%; further editorial diversification is required to reach the 70% target.
+- Concentration V2 Phase 2A draft: 70 items across `sustained_scan`, `rule_switch`, `interference_filter`, `multi_condition`, `sequential_tracking`, `multi_compare` and `alternating_rule` (10 each). Editorial difficulty: 17 easy, 36 medium, 17 hard. Arithmetic-primary share: 20/70 (approximately 29%). Strict item-level cognitive uniqueness is estimated at approximately 50%; further editorial diversification is required to reach the 70% target.
+- Every Attention and Concentration item has an explicit non-generic `family`; current sampling behaviour is unchanged.
+- Phase 2A.1 adds `mechanism` metadata and deterministic non-cyclic answer-position plans. Attention answer positions are 30/30/30/30 with maximum run 3; Concentration positions are 18/18/17/17 with maximum run 3. Neither plan has a four-position cycle. Strict post-audit still places Attention at approximately 55% and Concentration at approximately 50% cognitive uniqueness; mechanism labels do not by themselves count as diversification, so the top-tier 70% target remains open.
+- Phase 2A.2 semantically rewrites 40 Attention and 28 Concentration items using explicit editorial overrides that change stem structure, solution procedure, distractors and explanations. Strict post-classification is Attention A/B/C/D = 0/14/78/28 (approximately 88% C+D) and Concentration = 0/7/45/18 (90% C+D). Family and mechanism remain explicit; answer distributions and maximum runs remain 30/30/30/30, run 3 for Attention and 18/18/17/17, run 3 for Concentration.
+
+Release Candidate bank cleanup:
+
+- Attention V2 and Concentration V2 are frozen and unchanged.
+- Targeted semantic replacements: 6 Abstract, 10 Numerical, 10 Verbal, 2 SJT, 6 In-basket and 8 Personality items.
+- Numerical replacements add averages, fractions, percentage changes, ratios, conversions and multi-step rate reasoning; every result is explicitly derived in its explanation.
+- Verbal replacements add implication, contraposition, quantified exclusion and relational-order items with formal Vero/Falso/Non determinabile explanations.
+- The fixed assessment now samples by category while balancing editorial difficulty and preferring underrepresented families. Training and free-exam sampling behaviour is unchanged.
+- Bank totals, assessment structure, timers, scoring, persistence, feedback and navigation remain unchanged.
+
+Research-Based Final Upgrade:
+
+- Replaced exactly 72 existing items without changing IDs or bank totals: 24 Abstract, 16 Numerical, 16 Verbal, 10 SJT and 6 In-basket. Attention, Concentration, Personality and English B2 were not modified by this upgrade.
+- Abstract now includes stronger original spatial rotation/path/position items, matrix relations, dual-rule reasoning, symmetry/composition and sequence transformations suitable for the existing Unicode/HTML interface.
+- Numerical now includes four distinct number-grid mechanisms plus time/duration, table/data interpretation, ratio/fraction, percentage-change and multi-step problems; all new results and units were recalculated editorially.
+- Verbal now includes function/part-whole/cause/category/intensity analogies, formal True/False/Not Determinable inference, uniquely constrained ordering/assignment problems and vocabulary inferable from context.
+- SJT and In-basket replacements use distinct observable, generic scenarios with plausible alternatives and explicit reasoning about proportionality, dependencies, delegation, deadlines, interruption, escalation and handover.
+- The fixed assessment adds category-specific cognitive sampling: Abstract targets 8 Spatial, 7 Matrix/Abstract and 5 Dual/Transformation; Numerical and Verbal enforce minimum family coverage; SJT caps repeated families where alternatives exist; In-basket favours five different families. Difficulty balancing and all section totals/timers remain unchanged.
+- The 72 replacements have an editorial difficulty distribution of 15 easy, 36 medium and 21 hard. Correct-answer positions are balanced 18/18/18/18 with a maximum run of 3 and no ID-derived answer cycle.
+- This remains an independent educational question bank. It is not an official, certified or psychometrically validated assessment and does not reproduce proprietary test items.
+
+---
+
+## BANK V2 QUALITY TARGET
+
+- Keep the bank at exactly 620 total questions unless an explicit future request changes the count.
+- Target 65â€“75% cognitively distinct items rather than cosmetic variants.
+- Target an approximate difficulty distribution of 25% easy, 50% medium and 25% hard.
+- Use plausible distractors and specific, scenario-aware explanations.
+- Do not count cosmetic duplication as substantive variety.
+- SJT items should offer at least two alternatives that appear initially plausible, with one defensible best or least-effective answer.
+- Future sampling should support stratification by `family` and `diff` without changing current quiz behaviour.
+- Do not claim official psychometric validation, certification or equivalence.
+
 ---
 
 ## PWA architecture
@@ -253,7 +298,7 @@ Increment the version when necessary so installed PWAs receive updated assets.
 
 Do NOT change the caching strategy unless explicitly requested.
 
-CURRENT CACHE VERSION: `airport-security-prep-v4`
+CURRENT CACHE VERSION: `airport-security-prep-v10`
 
 ---
 
@@ -409,7 +454,7 @@ Do not expose secrets in HTML or JavaScript.
 
 ## Last verified
 
-Date: 2026-08-29
+Date: 2026-08-31
 
 Project name: Airport Security Prep
 
@@ -419,18 +464,42 @@ English bank: 120 total (30 grammar, 25 vocabulary, 25 reading, 25 dialogue, 15 
 
 Main assessment: 100 questions, 7 sections, 60 minutes
 
-Service Worker cache: `airport-security-prep-v4`
+Service Worker cache: `airport-security-prep-v10`
 
 Deployment: GitHub Pages
 
-Status: Static installable PWA with relative paths, offline precache, current-cache-only lookup, legacy cache cleanup, generic branding, separate assessment and English tests, persistent assessment sessions/statistics, immediate correctness feedback and first-click answer locking.
+Status: Research-Based Final Upgrade Release Candidate static installable PWA with frozen Attention/Concentration V2 banks, 72 targeted original replacements across Abstract/Numerical/Verbal/SJT/In-basket, category-specific cognitive sampling, relative paths, offline precache, persistent sessions/statistics and unchanged first-click answer locking and immediate feedback.
 
 ---
 
 ## Change Log
 
+### 2026-08-31
+
+- Completed the Research-Based Final Upgrade with exactly 72 ID-preserving replacements: 24 Abstract, 16 Numerical, 16 Verbal, 10 SJT and 6 In-basket; Attention, Concentration, Personality and English B2 remain unchanged.
+- Strengthened spatial/matrix reasoning, introduced distinct number-grid mechanisms, expanded verbal analogy and constrained deduction, and diversified generic SJT/In-basket scenarios using original educational content.
+- Added category-specific cognitive sampling quotas while preserving the 100-question, seven-section, 60-minute assessment and all persistence, scoring, feedback and navigation invariants.
+- Balanced the 72 correct-answer positions at 18/18/18/18 with maximum run 3 and recorded an editorial difficulty mix of 15 easy, 36 medium and 21 hard.
+- Incremented the Service Worker cache from v9 to v10 for the updated precached JavaScript; caching architecture is unchanged.
+
+### 2026-08-30
+
+- Completed the Release Candidate bank cleanup with 42 targeted replacements across Abstract, Numerical, Verbal, SJT, In-basket and Personality; Attention and Concentration were not modified.
+- Added family/difficulty-aware sampling to the fixed assessment while preserving section counts and timings; custom modes are unaffected.
+- Incremented the Service Worker cache from v8 to v9 for the updated precached JavaScript; caching strategy is unchanged.
+
 ### 2026-08-29
 
+- Completed Bank V2 Phase 2A.2 with 40 explicit Attention and 28 explicit Concentration semantic rewrites; strict post-classification reaches approximately 88% and 90% C+D respectively.
+- Incremented the Service Worker cache from v7 to v8 for the updated precached JavaScript; caching strategy is unchanged.
+- Added backward-compatible `mechanism` metadata for Attention and Concentration and replaced the visible `index % 4` answer cycle with balanced seeded plans; semantic uniqueness remains below target after strict review.
+- Incremented the Service Worker cache from v6 to v7 for the updated precached JavaScript; caching strategy is unchanged.
+- Prepared the Bank V2 Phase 2A draft for all 120 Attention and 70 Concentration items, separating perceptual-verification tasks from sustained rule-processing tasks; post-audit still requires further item-level diversification.
+- Added eight explicit Attention families and seven explicit Concentration families, balanced answer positions and documented difficulty, uniqueness and arithmetic-share estimates; other banks and quiz behaviour are unchanged.
+- Incremented the Service Worker cache from v5 to v6 for the updated precached JavaScript; caching strategy is unchanged.
+- Completed Bank V2 Phase 1: corrected audited P0 attention/verbal mappings, introduced structurally distinct deduction exercises and rewrote six ambiguous SJT items with specific explanations.
+- Added backward-compatible `family` metadata, documented the editorial `diff` semantics and recorded Bank V2 quality targets; quiz counts and behavioural invariants remain unchanged.
+- Incremented the Service Worker cache from v4 to v5 for the updated precached JavaScript; caching strategy is unchanged.
 - Sanitized public AI-agent documentation by replacing specific legacy names with generic branding-neutrality rules; project invariants were unaffected.
 - Updated the Service Worker to cache v4, added targeted cleanup for legacy cache prefixes, and limited cache lookup to the current cache.
 - Corrected assessment and English mode descriptions to state that feedback is immediate; quiz invariants were unaffected.
